@@ -1203,6 +1203,10 @@ class TimeBase(MaskableShapedLikeNDArray):
             if hasattr(self, attr):
                 delattr(self, attr)
 
+        # `np.ma.masked` is the preferred way to mark missing Time values.
+        # Keep accepting the singleton `np.nan` only for backwards compatibility
+        # with older Astropy behavior. This is intentionally an identity check
+        # (`is`), not `np.isnan()`, and should not be broadened to arbitrary NaN values.
         if value is np.ma.masked or value is np.nan:  # noqa: PLW0177, RUF100
             if not isinstance(self._time.jd2, Masked):
                 self._time.jd1 = Masked(self._time.jd1, copy=False)
